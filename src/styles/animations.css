@@ -1,0 +1,81 @@
+/* Ambient keyframes — transform/opacity only (GPU friendly) */
+
+@keyframes blob-drift-a {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  33% { transform: translate3d(6%, -8%, 0) scale(1.08); }
+  66% { transform: translate3d(-5%, 6%, 0) scale(0.95); }
+}
+@keyframes blob-drift-b {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(-8%, -6%, 0) scale(1.12); }
+}
+@keyframes blob-drift-c {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50% { transform: translate3d(5%, 7%, 0) rotate(20deg); }
+}
+@keyframes float-y {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -14px, 0); }
+}
+@keyframes float-y-sm {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -8px, 0); }
+}
+@keyframes spin-slow {
+  to { transform: rotate(360deg); }
+}
+@keyframes gradient-pan {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+@keyframes marquee {
+  to { transform: translate3d(-50%, 0, 0); }
+}
+@keyframes pulse-dot {
+  0% { box-shadow: 0 0 0 0 rgba(158, 230, 180, 0.55); }
+  70% { box-shadow: 0 0 0 10px rgba(158, 230, 180, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(158, 230, 180, 0); }
+}
+@keyframes scroll-line {
+  0% { transform: scaleY(0); transform-origin: top; }
+  45% { transform: scaleY(1); transform-origin: top; }
+  55% { transform: scaleY(1); transform-origin: bottom; }
+  100% { transform: scaleY(0); transform-origin: bottom; }
+}
+@keyframes scan {
+  0% { transform: translate3d(0, -10%, 0); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translate3d(0, 1000%, 0); opacity: 0; }
+}
+@keyframes caret {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* =========================================================
+   Reduced motion. ThemeContext sets html[data-motion="reduced"] from
+   the OS `prefers-reduced-motion: reduce` setting, or from the visitor's
+   footer toggle, so one selector covers both.
+   ========================================================= */
+html[data-motion='reduced'] *,
+html[data-motion='reduced'] *::before,
+html[data-motion='reduced'] *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.12s !important;
+  scroll-behavior: auto !important;
+}
+html[data-motion='reduced'] .marquee__track {
+  transform: none !important;
+}
+html[data-motion='reduced'] .cursor {
+  display: none !important;
+}

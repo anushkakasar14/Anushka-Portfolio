@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <radialGradient id="a" cx="30%" cy="30%" r="60%"><stop offset="0" stop-color="#9E6899" stop-opacity=".7"/><stop offset="1" stop-color="#140B18" stop-opacity="0"/></radialGradient>
+    <radialGradient id="b" cx="80%" cy="80%" r="50%"><stop offset="0" stop-color="#F3CCDE" stop-opacity=".35"/><stop offset="1" stop-color="#140B18" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="#120A16"/>
+  <rect width="1200" height="630" fill="url(#a)"/>
+  <rect width="1200" height="630" fill="url(#b)"/>
+  <text x="600" y="300" text-anchor="middle" font-family="Georgia, serif" font-size="96" fill="#FBF4F8" letter-spacing="4">ANUSHKA KASAR</text>
+  <text x="600" y="380" text-anchor="middle" font-family="Georgia, serif" font-style="italic" font-size="44" fill="#F3CCDE">Full-Stack Engineer · AI Tools &amp; Automation</text>
+</svg>
