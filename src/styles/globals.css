@@ -3279,3 +3279,32 @@ textarea.field__input {
     color: var(--text);
   }
 }
+
+/* ---------- Contact: send error + honeypot ---------- */
+.form__alert {
+  display: flex;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(240, 143, 168, 0.4);
+  background: rgba(240, 143, 168, 0.08);
+  font-size: 14px;
+  color: var(--text);
+}
+.form__alert svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: #f5a9bd;
+}
+.form__alert .text-link {
+  overflow-wrap: anywhere;
+}
+.hp-field {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}

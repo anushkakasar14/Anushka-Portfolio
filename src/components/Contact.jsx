@@ -3,7 +3,8 @@ import { createPortal } from 'react-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { AlertCircle, ArrowUpRight, Check, Copy, Github, Linkedin, Mail, Send } from 'lucide-react';
 import { profile, projectTypes, socials } from '../data/site';
-import { buildMailto, submitContact, validateContact } from '../services/contact';
+import { submitContact } from '../services/contact';
+import { LIMITS, validateContact } from '../lib/contactValidation';
 import { ease } from '../lib/motion';
 import { usePageMeta } from '../hooks/usePageMeta';
 import PageTransition from './common/PageTransition';
@@ -11,8 +12,9 @@ import SectionHeading from './common/SectionHeading';
 import MagneticButton from './common/MagneticButton';
 import Reveal from './common/Reveal';
 
-const initial = { name: '', email: '', projectType: '', message: '' };
-const MAX = 1000;
+// `company` is a honeypot: hidden from people, often filled in by bots.
+const initial = { name: '', email: '', projectType: '', message: '', company: '' };
+const MAX = LIMITS.messageMax;
 
 function FieldError({ id, message }) {
   return (
@@ -38,7 +40,7 @@ export default function Contact() {
   const [values, setValues] = useState(initial);
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
-  const [status, setStatus] = useState('idle'); // idle | loading | success
+  const [status, setStatus] = useState('idle'); // idle | loading | success | error
   const [sent, setSent] = useState(null);
   const [toast, setToast] = useState('');
 
@@ -73,6 +75,7 @@ export default function Contact() {
       document.getElementById(first === 'projectType' ? 'type-0' : `f-${first}`)?.focus();
       return;
     }
+    if (status === 'loading') return; // ignore double submits
     setStatus('loading');
     const res = await submitContact(values);
     if (res.ok) {
@@ -81,7 +84,8 @@ export default function Contact() {
       setValues(initial);
       setTouched({});
     } else {
-      setStatus('idle');
+      // Keep what they typed so they can simply try again.
+      setStatus('error');
     }
   };
 
@@ -263,8 +267,43 @@ export default function Contact() {
                   <FieldError id="e-message" message={err('message')} />
                 </div>
 
+                {/* Honeypot — invisible to people and screen readers. */}
+                <div className="hp-field" aria-hidden="true">
+                  <label htmlFor="f-company">Company</label>
+                  <input
+                    id="f-company"
+                    type="text"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    value={values.company}
+                    onChange={update('company')}
+                  />
+                </div>
+
+                <AnimatePresence initial={false}>
+                  {status === 'error' && (
+                    <motion.div
+                      className="form__alert"
+                      role="alert"
+                      initial={{ opacity: 0, y: -6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -6 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <AlertCircle aria-hidden="true" />
+                      <p>
+                        Something went wrong while sending your message. Please try again or email me directly at{' '}
+                        <a className="text-link" href={`mailto:${profile.email}`}>
+                          {profile.email}
+                        </a>
+                        .
+                      </p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
                 <div className="form__footer">
-                  <p className="form__note">Nothing is stored — your details stay in your browser.</p>
+                  <p className="form__note">Your message goes straight to my inbox.</p>
                   <MagneticButton as="button" type="submit" disabled={status === 'loading'} aria-busy={status === 'loading'}>
                     {status === 'loading' ? (
                       <>
@@ -298,15 +337,11 @@ export default function Contact() {
                     />
                   </svg>
                 </span>
-                <h3 className="success__title">Thank you, {sent?.name.split(' ')[0]}.</h3>
+                <h3 className="success__title">Message sent successfully.</h3>
                 <p className="success__text">
-                  Your message is ready. This site is frontend-only, so the quickest way to make sure it reaches me
-                  is to send it from your email app — it&rsquo;s already written for you.
+                  Thank you for reaching out{sent?.name ? `, ${sent.name.trim().split(' ')[0]}` : ''}. I&rsquo;ll get back to you soon.
                 </p>
                 <div className="success__actions">
-                  <MagneticButton href={buildMailto(sent, profile.email)}>
-                    <Mail aria-hidden="true" /> Open in email app
-                  </MagneticButton>
                   <MagneticButton as="button" type="button" variant="ghost" onClick={() => setStatus('idle')}>
                     Write another
                   </MagneticButton>
